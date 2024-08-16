@@ -6,6 +6,7 @@ import ViewPatient from './components/ViewPatient';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from './Pages/Users/Login';
 import Register from './Pages/Users/Register';
+import Verify from './Pages/Users/Verify';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <BrowserRouter>
       <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/verify" element={<Verify />} />
       <Route path="/register" element={<Register />} />
         <Route path="/LoginPage" element={<LoginPage />} />
         <Route path='/layout' element={<Layout/>}/>

@@ -8,7 +8,7 @@ const Shared = () => {
           loading="lazy"
           src="https://assets.clevelandclinic.org/transform/11c5739d-f105-475a-b756-7463f3d603b5/Keto-Diet-1133794221-770x533-1_jpg"
           alt="TraceAccounting interface demonstration"
-          className="object-cover w-full h-full"
+          className="object-cover w-full h-full filter blur-s"
         />
       </div>
     </section>
