@@ -1,151 +1,263 @@
-import React from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const UserDetails = () => {
+function UserDetails() {
+  const [step, setStep] = useState(1);
+  const navigate = useNavigate();
+
+  const nextStep = () => {
+    if (step < 3) {
+      setStep(step + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const handleSubmit = () => {
+    navigate("/success");
+  };
+
   return (
-    <section className="flex flex-col">
-      <header className="flex overflow-hidden flex-col justify-center items-end px-8 py-7 w-full bg-white min-h-[100px] max-md:px-5 max-md:max-w-full">
-        <div className="flex gap-2 items-center max-md:max-w-full">
-          <button className="flex gap-2 justify-center items-center self-stretch pr-6 pl-4 my-auto text-base font-semibold leading-relaxed text-white bg-lime-400 rounded-3xl min-h-[48px] max-md:pr-5">
-            <img loading="lazy" src="http://b.io/ext_11-" alt="" className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square" />
-            <span className="self-stretch my-auto">Fill the form</span>
-          </button>
-          <button className="flex gap-2.5 justify-center items-center self-stretch my-auto w-12 h-12 rounded-3xl bg-stone-100 min-h-[48px]" aria-label="Notification">
-            <img loading="lazy" src="http://b.io/ext_12-" alt="" className="object-contain self-stretch my-auto w-6 aspect-square" />
-          </button>
-          <div className="flex gap-2 items-center self-stretch py-1 pr-4 pl-2 my-auto text-base leading-relaxed rounded-3xl bg-stone-100 min-h-[48px] text-neutral-600">
-            <div className="flex gap-2 items-center self-stretch my-auto">
-              <img loading="lazy" src="http://b.io/ext_13-" alt="Profile picture of Nakitto Catherine" className="object-contain shrink-0 self-stretch my-auto w-10 rounded-3xl aspect-square" />
-              <span className="self-stretch my-auto">Details</span>
+    <div
+      className="flex overflow-hidden flex-col mx-auto w-full bg-green-200 h-[600px] max-w-[1024px] p-8"
+      style={{
+        backgroundImage:
+          "url(https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAzL3Jhd3BpeGVsb2ZmaWNlNF9zb2Z0X2xpZ2h0X21pbmltYWxfdG9uZXNfY2xvc2VfdXBfb2ZfYV90cmVlX21hY185NDYxNmVmYi1jNGVhLTRiMzMtYWFjMC1iZmY0NWI3ZWIwY2RfMS5qcGc.jpg)",
+        backgroundSize: "cover", // Ensures the image covers the entire div
+        backgroundPosition: "center", // Centers the image within the div
+        backgroundRepeat: "no-repeat", // Prevents the image from repeating
+      }}
+    >
+      <div className="flex flex-row w-full gap-8">
+        {/* Left Section - Progress Navigation */}
+        <div className="flex flex-col items-start w-1/3 bg-white bg-opacity-60 rounded-lg p-4">
+          <img
+            loading="lazy"
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/7d0498fb0f4f58a30925bc0d5f8bd87cc29532a518a66380aa0c8b2ad5dfdcff?apiKey=2b51dad425e04206847488420121dc35&"
+            alt="Keto Clinic Logo"
+            className="self-center w-32 max-w-full aspect-square bg-gray-200 mb-4"
+          />
+          <div className="flex flex-col z-10 items-start mt-0 max-w-full w-full">
+            <div
+              className={`flex gap-2 items-center w-full font-medium leading-relaxed ${
+                step >= 1 ? "text-slate-800" : "text-slate-500"
+              }`}
+            >
+              <div className="w-10 h-10 text-lg whitespace-nowrap rounded-3xl bg-slate-800 flex justify-center items-center">
+                1
+              </div>
+              <div className="text-base">Patient Information</div>
             </div>
-            <img loading="lazy" src="http://b.io/ext_14-" alt="" className="object-contain shrink-0 self-stretch my-auto w-5 aspect-square" />
+            <div className="flex gap-2.5 justify-center items-center mt-2 w-10">
+              <div className="border-2 border-white border-solid h-6" />
+            </div>
+            <div
+              className={`flex gap-2 items-center mt-2 font-medium leading-relaxed ${
+                step >= 2 ? "text-slate-800" : "text-slate-500"
+              }`}
+            >
+              <div className="w-10 h-10 text-lg whitespace-nowrap bg-white rounded-3xl flex justify-center items-center">
+                2
+              </div>
+              <div className="text-base">Health Status</div>
+            </div>
+            <div className="flex gap-2.5 justify-center items-center mt-2 w-10">
+              <div className="border-2 border-white border-solid h-6" />
+            </div>
+            <div
+              className={`flex gap-2 items-center mt-2 font-medium leading-relaxed ${
+                step >= 3 ? "text-slate-800" : "text-slate-500"
+              }`}
+            >
+              <div className="w-10 h-10 text-lg whitespace-nowrap bg-white rounded-3xl flex justify-center items-center">
+                3
+              </div>
+              <div className="text-base">Plan</div>
+            </div>
           </div>
         </div>
-      </header>
-      <main className="flex flex-col items-center self-center py-5 w-full rounded-3xl bg-stone-100 max-w-[1136px] min-h-[924px] max-md:max-w-full">
-        <h1 className="self-stretch px-6 w-full text-4xl font-semibold leading-relaxed text-neutral-600 max-md:px-5">
-          Application Form
-        </h1>
-        <div className="flex overflow-hidden flex-col items-center mt-6 max-w-full bg-white rounded-3xl w-[1080px]">
-          <div className="flex overflow-hidden flex-col items-center px-8 pt-8 w-full h-[704px] max-w-[1080px] max-md:px-5 max-md:max-w-full">
-            <nav className="flex flex-wrap gap-5 justify-between items-start w-full">
-              {/* Step 1 */}
-              <div className="flex flex-col items-center">
-                <div className="flex flex-col justify-center items-center w-12 h-12 rounded-3xl bg-slate-500 min-h-[48px]">
-                  <img loading="lazy" src="http://b.io/ext_15-" alt="" className="object-contain w-6 aspect-square" />
+
+        {/* Right Section - Form */}
+        <div className="flex flex-col w-2/3 bg-white p-8 rounded-lg shadow-lg">
+          {step === 1 && (
+            <>
+              <div className="text-2xl font-bold text-slate-800">
+                Patient Information
+              </div>
+              <div className="flex flex-wrap mt-4 w-full text-slate-500">
+                <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
+                  <div className="flex flex-col w-full">
+                    <div>Salutation</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col w-full mt-4">
+                    <div>Full name</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Gender</div>
+                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="non-binary">Non-Binary</option>
+                      <option value="prefer-not-to-say">
+                        Prefer Not to Say
+                      </option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Email address</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Date of birth</div>
+                    <input
+                      type="date"
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col items-center mt-2">
-                  <span className="text-xs font-medium tracking-wide uppercase text-neutral-400">
-                    Step 1
-                  </span>
-                  <span className="mt-1 text-base font-semibold leading-relaxed text-neutral-600">
-                    Personal Information
-                  </span>
+
+                <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Phone number</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Whatsapp Number</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Home Address</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Work Address</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
                 </div>
               </div>
-              {/* Step 2 */}
-              <div className="flex pt-6 min-h-[24px]"></div>
-              <div className="flex flex-col items-center">
-                <div className="flex flex-col justify-center items-center w-12 h-12 rounded-3xl bg-stone-100 min-h-[48px]">
-                  <img loading="lazy" src="http://b.io/ext_16-" alt="" className="object-contain w-6 aspect-square" />
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <div className="text-2xl font-bold text-slate-800">
+                Health Status
+              </div>
+              <div className="flex flex-wrap mt-8 w-full text-slate-500">
+                <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
+                  <div className="flex flex-col w-full">
+                    <div>Current body weight?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col w-full mt-4">
+                    <div>Weight Goal?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Do you have any allergies/food exclusions?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Observation after the allergies?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Medication for the allergies?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center mt-2 text-neutral-400">
-                  <span className="text-xs font-medium tracking-wide uppercase">
-                    Step 2
-                  </span>
-                  <span className="mt-1 text-base font-semibold leading-relaxed">
-                    Residential Information
-                  </span>
+
+                <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Whats your Surgical History?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Whats your Sample plan?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>What's your plan start date?</div>
+                    <input
+                      type="date"
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
+                  </div>
+
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>What's your plan end date?</div>
+                    <input
+                      type="date"
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
+                  </div>
                 </div>
               </div>
-              {/* Continue for other steps similarly */}
-            </nav>
-            <hr className="mt-8 w-full border border-solid border-neutral-500 border-opacity-10 min-h-[1px]" />
-            <form className="flex flex-wrap gap-4 justify-center items-start pb-8 mt-8 w-full">
-              {/* Salutation */}
-              <div className="flex flex-col grow shrink min-w-[240px] w-[400px] max-md:max-w-full">
-                <div className="flex flex-col max-w-full w-[490px]">
-                  <label htmlFor="salutation" className="text-base font-semibold leading-relaxed text-neutral-600">
-                    Salutation
-                  </label>
-                  <span className="mt-1 text-sm text-neutral-400 max-md:max-w-full">
-                    How can we address you?
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-10 justify-between items-center px-4 mt-2 max-w-full text-base leading-relaxed whitespace-nowrap bg-white rounded-xl border border-solid border-neutral-500 border-opacity-30 min-h-[56px] text-neutral-400 w-[500px]">
-                  <select id="salutation" name="salutation" className="appearance-none bg-transparent border-none w-full text-neutral-400 leading-tight focus:outline-none">
-                    <option>Mr.</option>
-                    <option>Mrs.</option>
-                    <option>Ms.</option>
-                    <option>Dr.</option>
-                  </select>
-                  <img loading="lazy" src="http://b.io/ext_19-" alt="" className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square pointer-events-none" />
-                </div>
-              </div>
-              {/* Full Name */}
-              <div className="flex flex-col grow shrink min-w-[240px] w-[400px] max-md:max-w-full">
-                <div className="flex flex-col max-w-full w-[490px]">
-                  <label htmlFor="fullName" className="text-base font-semibold leading-relaxed text-neutral-600">
-                    Full Name
-                  </label>
-                  <span className="mt-1 text-sm text-neutral-400 max-md:max-w-full">
-                    The applicant's full legal name
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  placeholder="Enter your Full Name"
-                  className="px-4 mt-2 max-w-full text-base leading-relaxed bg-white rounded-xl border border-solid border-neutral-500 border-opacity-30 min-h-[56px] text-neutral-400 w-[500px]"
-                />
-              </div>
-              {/* Date of Birth */}
-              <div className="flex flex-col grow shrink min-w-[240px] w-[400px] max-md:max-w-full">
-                <div className="flex flex-col max-w-full w-[490px]">
-                  <label htmlFor="dateOfBirth" className="text-base font-semibold leading-relaxed text-neutral-600">
-                    Date of Birth
-                  </label>
-                  <span className="mt-1 text-sm text-neutral-400 max-md:max-w-full">
-                    The applicant's date of birth for identity verification
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-10 justify-between items-center px-4 mt-2 max-w-full text-base leading-relaxed bg-white rounded-xl border border-solid border-neutral-500 border-opacity-30 min-h-[56px] text-neutral-400 w-[500px]">
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <div className="text-2xl mt-8 font-bold text-slate-800">Plan</div>
+              <div className="flex flex-col mt-8 w-full text-slate-500">
+                <div className="flex flex-col w-full">
+                  <div>Attach Documents</div>
                   <input
-                    type="date"
-                    id="dateOfBirth"
-                    name="dateOfBirth"
-                    className="appearance-none bg-transparent border-none w-full text-neutral-400 leading-tight focus:outline-none"
+                    type="file"
+                    className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    multiple
                   />
-                  <img loading="lazy" src="http://b.io/ext_20-" alt="" className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square pointer-events-none" />
+                </div>
+                <div className="flex flex-col mt-4 mb-9 w-full">
+                  <div>Attach Files</div>
+                  <input
+                    type="file"
+                    className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    multiple
+                  />
                 </div>
               </div>
-              {/* Gender */}
-              <div className="flex flex-col grow shrink min-w-[240px] w-[400px] max-md:max-w-full">
-                <div className="flex flex-col max-w-full w-[490px]">
-                  <label htmlFor="gender" className="text-base font-semibold leading-relaxed text-neutral-600">
-                    Gender
-                  </label>
-                  <span className="mt-1 text-sm text-neutral-400 max-md:max-w-full">
-                    The applicant's gender
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-10 justify-between items-center px-4 mt-2 max-w-full text-base leading-relaxed bg-white rounded-xl border border-solid border-neutral-500 border-opacity-30 min-h-[56px] text-neutral-400 w-[500px]">
-                  <select id="gender" name="gender" className="appearance-none bg-transparent border-none w-full text-neutral-400 leading-tight focus:outline-none">
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                    <option>Prefer not to say</option>
-                  </select>
-                  <img loading="lazy" src="http://b.io/ext_19-" alt="" className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square pointer-events-none" />
-                </div>
+            </>
+          )}
+
+          <div className="flex gap-4 items-start mt-6 w-full">
+            {step > 1 && (
+              <div
+                onClick={prevStep}
+                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-slate-100 border-slate-200 text-slate-800 cursor-pointer"
+              >
+                Previous
               </div>
-              {/* More form fields continue here */}
-            </form>
+            )}
+            {step < 3 && (
+              <div
+                onClick={nextStep}
+                className="flex-1 px-6 py-3 text-center text-white rounded-lg bg-slate-800 cursor-pointer"
+              >
+                Next
+              </div>
+            )}
+            {step === 3 && (
+              <div
+                onClick={handleSubmit}
+                className="flex-1 px-6 py-3 text-center text-white rounded-lg bg-slate-800 cursor-pointer"
+              >
+                Submit
+              </div>
+            )}
           </div>
         </div>
-      </main>
-    </section>
+      </div>
+    </div>
   );
-};
+}
 
 export default UserDetails;

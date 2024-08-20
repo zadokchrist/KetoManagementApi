@@ -93,7 +93,7 @@ const Login = () => {
           </main>
           <footer className="mt-12 text-base text-neutral-600">
             Don't have an account?{" "}
-            <a href="/register" className="font-semibold text-blue-400">
+            <a href="/user-details" className="font-semibold text-blue-400">
               Register here.
             </a>
           </footer>
