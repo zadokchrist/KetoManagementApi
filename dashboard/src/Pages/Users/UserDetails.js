@@ -173,6 +173,10 @@ function UserDetails() {
                     <div>Family history of diabetes, hypertension?</div>
                     <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
                   </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Have you ever been on a diet plan?</div>
+                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                  </div>
                 </div>
 
                 <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
@@ -220,10 +224,7 @@ function UserDetails() {
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Have you ever been on a diet plan?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
-                  </div>
+                  
                 </div>
               </div>
             </>
@@ -232,7 +233,7 @@ function UserDetails() {
           {step === 3 && (
             <>
               <div className="text-2xl font-bold text-slate-800">Plan</div>
-              <div className="flex flex-wrap mt-12 w-full text-slate-500">
+              <div className="flex flex-wrap w-full text-slate-500">
                 <div className="flex flex-col w-full mb-4">
                   <div className="flex flex-col mt-4 w-full">
                     <div>Select Plan</div>
@@ -245,19 +246,43 @@ function UserDetails() {
                     </select>
                   </div>
                   <div className="flex flex-col mt-4 w-full">
+                    <div>What's your plan start date?</div>
+                    <input
+                      type="date"
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
+                  </div>
+
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>What's your plan end date?</div>
+                    <input
+                      type="date"
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
+                  </div>
+                  <div className="flex flex-col mt-4 mb-9 w-full">
+                  <div>Attach Files</div>
+                  <input
+                    type="file"
+                    className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    multiple
+                  />
+                </div>
+              
+                  {/* <div className="flex flex-col mt-4 w-full">
                     <div>Additional Notes</div>
                     <textarea
                       className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
                       rows="5"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </>
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex mt-auto">
+          <div className="flex mt-auto gap-4">
             {step > 1 && (
               <div
                 onClick={prevStep}
