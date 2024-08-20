@@ -23,13 +23,13 @@ function UserDetails() {
 
   return (
     <div
-      className="flex overflow-hidden flex-col mx-auto w-full bg-green-200 h-[600px] max-w-[1024px] p-8"
+      className="flex overflow-hidden flex-col mx-auto w-full bg-green-200 h-[620px] max-w-[1310px] p-4"
       style={{
         backgroundImage:
           "url(https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAzL3Jhd3BpeGVsb2ZmaWNlNF9zb2Z0X2xpZ2h0X21pbmltYWxfdG9uZXNfY2xvc2VfdXBfb2ZfYV90cmVlX21hY185NDYxNmVmYi1jNGVhLTRiMzMtYWFjMC1iZmY0NWI3ZWIwY2RfMS5qcGc.jpg)",
-        backgroundSize: "cover", // Ensures the image covers the entire div
-        backgroundPosition: "center", // Centers the image within the div
-        backgroundRepeat: "no-repeat", // Prevents the image from repeating
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="flex flex-row w-full gap-8">
@@ -151,7 +151,7 @@ function UserDetails() {
               <div className="text-2xl font-bold text-slate-800">
                 Health Status
               </div>
-              <div className="flex flex-wrap mt-8 w-full text-slate-500">
+              <div className="flex flex-wrap mt-5 w-full text-slate-500">
                 <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
                   <div className="flex flex-col w-full">
                     <div>Current body weight?</div>
@@ -166,38 +166,63 @@ function UserDetails() {
                     <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Observation after the allergies?</div>
+                    <div>Any chronic illness(es)?</div>
                     <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Medication for the allergies?</div>
+                    <div>Family history of diabetes, hypertension?</div>
                     <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
                   </div>
                 </div>
 
                 <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
+                  <div className="flex flex-col w-full">
+                    <div>Daily activity level</div>
+                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                      <option value="">Select Activity Level</option>
+                      <option value="sedentary">Sedentary</option>
+                      <option value="lightly active">Lightly Active</option>
+                      <option value="moderately active">
+                        Moderately Active
+                      </option>
+                      <option value="very active">Very Active</option>
+                      <option value="super active">Super Active</option>
+                    </select>
+                  </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Whats your Surgical History?</div>
+                    <div>Rate of alcohol consumption</div>
+                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                      <option value="">Select Consumption Rate</option>
+                      <option value="none">None</option>
+                      <option value="occasional">Occasional</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="heavy">Heavy</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Do you smoke?</div>
+                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                      <option value="">Select Smoking Status</option>
+                      <option value="non-smoker">Non-Smoker</option>
+                      <option value="light-smoker">Light Smoker</option>
+                      <option value="moderate-smoker">Moderate Smoker</option>
+                      <option value="heavy-smoker">Heavy Smoker</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Do you take any supplements?</div>
+                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                      <option value="">Select Supplement Status</option>
+                      <option value="none">None</option>
+                      <option value="vitamins">Vitamins</option>
+                      <option value="minerals">Minerals</option>
+                      <option value="protein-powder">Protein Powder</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Have you ever been on a diet plan?</div>
                     <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Whats your Sample plan?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>What's your plan start date?</div>
-                    <input
-                      type="date"
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>What's your plan end date?</div>
-                    <input
-                      type="date"
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
                   </div>
                 </div>
               </div>
@@ -206,33 +231,37 @@ function UserDetails() {
 
           {step === 3 && (
             <>
-              <div className="text-2xl mt-8 font-bold text-slate-800">Plan</div>
-              <div className="flex flex-col mt-8 w-full text-slate-500">
-                <div className="flex flex-col w-full">
-                  <div>Attach Documents</div>
-                  <input
-                    type="file"
-                    className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    multiple
-                  />
-                </div>
-                <div className="flex flex-col mt-4 mb-9 w-full">
-                  <div>Attach Files</div>
-                  <input
-                    type="file"
-                    className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    multiple
-                  />
+              <div className="text-2xl font-bold text-slate-800">Plan</div>
+              <div className="flex flex-wrap mt-12 w-full text-slate-500">
+                <div className="flex flex-col w-full mb-4">
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Select Plan</div>
+                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                      <option value="">Select Plan</option>
+                      <option value="basic">Basic</option>
+                      <option value="standard">Standard</option>
+                      <option value="premium">Premium</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Additional Notes</div>
+                    <textarea
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                      rows="5"
+                    />
+                  </div>
                 </div>
               </div>
             </>
           )}
 
-          <div className="flex gap-4 items-start mt-6 w-full">
+          {/* Navigation Buttons */}
+          <div className="flex mt-auto">
             {step > 1 && (
               <div
                 onClick={prevStep}
-                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-slate-100 border-slate-200 text-slate-800 cursor-pointer"
+                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-slate-100 border-slate-800 text-slate-800 cursor-pointer"
               >
                 Previous
               </div>
@@ -240,7 +269,7 @@ function UserDetails() {
             {step < 3 && (
               <div
                 onClick={nextStep}
-                className="flex-1 px-6 py-3 text-center text-white rounded-lg bg-slate-800 cursor-pointer"
+                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-slate-800 border-slate-800 text-white cursor-pointer"
               >
                 Next
               </div>
@@ -248,7 +277,7 @@ function UserDetails() {
             {step === 3 && (
               <div
                 onClick={handleSubmit}
-                className="flex-1 px-6 py-3 text-center text-white rounded-lg bg-slate-800 cursor-pointer"
+                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-green-500 border-green-500 text-white cursor-pointer"
               >
                 Submit
               </div>
