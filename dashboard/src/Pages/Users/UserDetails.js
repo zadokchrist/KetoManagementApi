@@ -1,8 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function UserDetails() {
   const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    title: "",
+    firstName: "",
+    lastName: "",
+    mobileNumber: "",
+    dateOfBirth: "",
+    gender: "",
+    whatsappNumber: "",
+    email: "",
+    homeAddress: "",
+    workAddress: "",
+    currentBodyWeight: "",
+    weightGoal: "",
+    allergies: "",
+    observations: "",
+    surgicalHistory: "",
+    medications: "",
+    attachment: null, // Start with null
+    planId: 0,
+    planStartDate: "",
+    planEndDate: "",
+  });
+
   const navigate = useNavigate();
 
   const nextStep = () => {
@@ -17,13 +41,38 @@ function UserDetails() {
     }
   };
 
-  const handleSubmit = () => {
-    navigate("/success");
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    if (type === 'file') {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleSubmit = async () => {
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      if (formData[key] !== null) {
+        formDataToSend.append(key, formData[key]);
+      }
+    }
+
+    try {
+      await axios.post("http://45.56.109.230:5001/AddPatient", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      navigate("/success");
+    } catch (error) {
+      console.error("Error submitting the form", error);
+    }
   };
 
   return (
     <div
-      className="flex overflow-hidden flex-col mx-auto w-full bg-green-200 h-[620px] max-w-[1310px] p-4"
+      className="flex overflow-hidden flex-col mx-auto w-full bg-green-200 max-w-[1310px] p-4"
       style={{
         backgroundImage:
           "url(https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAzL3Jhd3BpeGVsb2ZmaWNlNF9zb2Z0X2xpZ2h0X21pbmltYWxfdG9uZXNfY2xvc2VfdXBfb2ZfYV90cmVlX21hY185NDYxNmVmYi1jNGVhLTRiMzMtYWFjMC1iZmY0NWI3ZWIwY2RfMS5qcGc.jpg)",
@@ -89,18 +138,46 @@ function UserDetails() {
                 Patient Information
               </div>
               <div className="flex flex-wrap mt-4 w-full text-slate-500">
+                {/* Patient Information Fields */}
                 <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
                   <div className="flex flex-col w-full">
                     <div>Salutation</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col w-full mt-4">
-                    <div>Full name</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <div>First Name</div>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
+                  </div>
+                  <div className="flex flex-col mt-4 w-full">
+                    <div>Last Name</div>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
                     <div>Gender</div>
-                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    >
                       <option value="">Select Gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
@@ -112,13 +189,22 @@ function UserDetails() {
                     </select>
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Email address</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <div>Email Address</div>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Date of birth</div>
+                    <div>Date of Birth</div>
                     <input
                       type="date"
+                      name="dateOfBirth"
+                      value={formData.dateOfBirth}
+                      onChange={handleChange}
                       className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
                     />
                   </div>
@@ -126,188 +212,215 @@ function UserDetails() {
 
                 <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Phone number</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <div>Phone Number</div>
+                    <input
+                      type="text"
+                      name="mobileNumber"
+                      value={formData.mobileNumber}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
                     <div>Whatsapp Number</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <input
+                      type="text"
+                      name="whatsappNumber"
+                      value={formData.whatsappNumber}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
                     <div>Home Address</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <input
+                      type="text"
+                      name="homeAddress"
+                      value={formData.homeAddress}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
                     <div>Work Address</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <input
+                      type="text"
+                      name="workAddress"
+                      value={formData.workAddress}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                 </div>
               </div>
+              <div className="flex justify-end mt-6 w-full">
+                <button
+                  onClick={nextStep}
+                  className="px-8 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700"
+                >
+                  Next
+                </button>
+              </div>
             </>
           )}
-
           {step === 2 && (
             <>
               <div className="text-2xl font-bold text-slate-800">
                 Health Status
               </div>
-              <div className="flex flex-wrap mt-5 w-full text-slate-500">
+              <div className="flex flex-wrap mt-4 w-full text-slate-500">
+                {/* Health Status Fields */}
                 <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
                   <div className="flex flex-col w-full">
-                    <div>Current body weight?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
-                  </div>
-                  <div className="flex flex-col w-full mt-4">
-                    <div>Weight Goal?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Do you have any allergies/food exclusions?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <div>Current Body Weight</div>
+                    <input
+                      type="text"
+                      name="currentBodyWeight"
+                      value={formData.currentBodyWeight}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Any chronic illness(es)?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <div>Weight Goal</div>
+                    <input
+                      type="text"
+                      name="weightGoal"
+                      value={formData.weightGoal}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Family history of diabetes, hypertension?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Have you ever been on a diet plan?</div>
-                    <div className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"></div>
+                    <div>Allergies</div>
+                    <input
+                      type="text"
+                      name="allergies"
+                      value={formData.allergies}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                 </div>
-
                 <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
                   <div className="flex flex-col w-full">
-                    <div>Daily activity level</div>
-                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
-                      <option value="">Select Activity Level</option>
-                      <option value="sedentary">Sedentary</option>
-                      <option value="lightly active">Lightly Active</option>
-                      <option value="moderately active">
-                        Moderately Active
-                      </option>
-                      <option value="very active">Very Active</option>
-                      <option value="super active">Super Active</option>
-                    </select>
+                    <div>Observations</div>
+                    <input
+                      type="text"
+                      name="observations"
+                      value={formData.observations}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Rate of alcohol consumption</div>
-                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
-                      <option value="">Select Consumption Rate</option>
-                      <option value="none">None</option>
-                      <option value="occasional">Occasional</option>
-                      <option value="moderate">Moderate</option>
-                      <option value="heavy">Heavy</option>
-                    </select>
+                    <div>Surgical History</div>
+                    <input
+                      type="text"
+                      name="surgicalHistory"
+                      value={formData.surgicalHistory}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
                   <div className="flex flex-col mt-4 w-full">
-                    <div>Do you smoke?</div>
-                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
-                      <option value="">Select Smoking Status</option>
-                      <option value="non-smoker">Non-Smoker</option>
-                      <option value="light-smoker">Light Smoker</option>
-                      <option value="moderate-smoker">Moderate Smoker</option>
-                      <option value="heavy-smoker">Heavy Smoker</option>
-                    </select>
+                    <div>Medications</div>
+                    <input
+                      type="text"
+                      name="medications"
+                      value={formData.medications}
+                      onChange={handleChange}
+                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                    />
                   </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Do you take any supplements?</div>
-                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
-                      <option value="">Select Supplement Status</option>
-                      <option value="none">None</option>
-                      <option value="vitamins">Vitamins</option>
-                      <option value="minerals">Minerals</option>
-                      <option value="protein-powder">Protein Powder</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  
                 </div>
+              </div>
+              <div className="flex justify-between mt-6 w-full">
+                <button
+                  onClick={prevStep}
+                  className="px-8 py-3 text-white bg-slate-600 rounded-lg shadow-md hover:bg-slate-700"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={nextStep}
+                  className="px-8 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700"
+                >
+                  Next
+                </button>
               </div>
             </>
           )}
-
           {step === 3 && (
             <>
-              <div className="text-2xl font-bold text-slate-800">Plan</div>
-              <div className="flex flex-wrap w-full text-slate-500">
-                <div className="flex flex-col w-full mb-4">
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Select Plan</div>
-                    <select className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200">
-                      <option value="">Select Plan</option>
-                      <option value="basic">Basic</option>
-                      <option value="standard">Standard</option>
-                      <option value="premium">Premium</option>
-                      <option value="custom">Custom</option>
-                    </select>
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>What's your plan start date?</div>
-                    <input
-                      type="date"
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
+              <div className="text-2xl mt-12 font-bold text-slate-800">Plan</div>
+              <div className="flex flex-wrap mt-4 w-full text-slate-500">
+              
+                <div className="flex flex-col md:flex-row w-full">
+                 
+                  <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
+                    <div className="flex flex-col w-full mb-4">
+                      <div>Plan ID</div>
+                      <input
+                        type="number"
+                        name="planId"
+                        value={formData.planId}
+                        onChange={handleChange}
+                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                      />
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <div>Plan Start Date</div>
+                      <input
+                        type="date"
+                        name="planStartDate"
+                        value={formData.planStartDate}
+                        onChange={handleChange}
+                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>What's your plan end date?</div>
-                    <input
-                      type="date"
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
+                  {/* Right Column */}
+                  <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
+                    <div className="flex flex-col w-full mb-4">
+                      <div>Plan End Date</div>
+                      <input
+                        type="date"
+                        name="planEndDate"
+                        value={formData.planEndDate}
+                        onChange={handleChange}
+                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                      />
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <div>Attachment</div>
+                      <input
+                        type="file"
+                        name="attachment"
+                        onChange={handleChange}
+                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col mt-4 mb-9 w-full">
-                  <div>Attach Files</div>
-                  <input
-                    type="file"
-                    className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    multiple
-                  />
                 </div>
-              
-                  {/* <div className="flex flex-col mt-4 w-full">
-                    <div>Additional Notes</div>
-                    <textarea
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                      rows="5"
-                    />
-                  </div> */}
-                </div>
+              </div>
+              <div className="flex justify-between mt-14 mb-8 w-full">
+                <button
+                  onClick={prevStep}
+                  className="px-8 py-3 text-white bg-slate-600 rounded-lg shadow-md hover:bg-slate-700"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="px-8 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700"
+                >
+                  Submit
+                </button>
               </div>
             </>
           )}
-
-          {/* Navigation Buttons */}
-          <div className="flex mt-auto gap-4">
-            {step > 1 && (
-              <div
-                onClick={prevStep}
-                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-slate-100 border-slate-800 text-slate-800 cursor-pointer"
-              >
-                Previous
-              </div>
-            )}
-            {step < 3 && (
-              <div
-                onClick={nextStep}
-                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-slate-800 border-slate-800 text-white cursor-pointer"
-              >
-                Next
-              </div>
-            )}
-            {step === 3 && (
-              <div
-                onClick={handleSubmit}
-                className="flex-1 px-6 py-3 text-center rounded-lg border border-solid bg-green-500 border-green-500 text-white cursor-pointer"
-              >
-                Submit
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>
