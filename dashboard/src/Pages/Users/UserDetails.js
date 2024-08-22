@@ -21,7 +21,7 @@ function UserDetails() {
     observations: "",
     surgicalHistory: "",
     medications: "",
-    attachment: null, // Start with null
+    attachment: null,
     planId: 0,
     planStartDate: "",
     planEndDate: "",
@@ -52,12 +52,25 @@ function UserDetails() {
 
   const handleSubmit = async () => {
     const formDataToSend = new FormData();
+    
     for (const key in formData) {
-      if (formData[key] !== null) {
+      if (formData[key] !== null && key !== 'attachment') {
         formDataToSend.append(key, formData[key]);
       }
     }
-
+  
+    // Append file details if a file is attached
+    if (formData.attachment) {
+      formDataToSend.append('attachment', formData.attachment);
+      formDataToSend.append('attachmentName', formData.attachment.name); // File name
+      formDataToSend.append('attachmentType', formData.attachment.type); // MIME type
+    }
+  
+    // Log formData to console for debugging
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+  
     try {
       await axios.post("http://45.56.109.230:5001/AddPatient", formDataToSend, {
         headers: {
@@ -69,6 +82,7 @@ function UserDetails() {
       console.error("Error submitting the form", error);
     }
   };
+  
 
   return (
     <div
@@ -355,9 +369,7 @@ function UserDetails() {
             <>
               <div className="text-2xl mt-12 font-bold text-slate-800">Plan</div>
               <div className="flex flex-wrap mt-4 w-full text-slate-500">
-              
                 <div className="flex flex-col md:flex-row w-full">
-                 
                   <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
                     <div className="flex flex-col w-full mb-4">
                       <div>Plan ID</div>
