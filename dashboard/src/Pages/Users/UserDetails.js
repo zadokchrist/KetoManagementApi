@@ -62,8 +62,6 @@ function UserDetails() {
     // Append file details if a file is attached
     if (formData.attachment) {
       formDataToSend.append('attachment', formData.attachment);
-      formDataToSend.append('attachmentName', formData.attachment.name); // File name
-      formDataToSend.append('attachmentType', formData.attachment.type); // MIME type
     }
   
     // Log formData to console for debugging
@@ -82,7 +80,6 @@ function UserDetails() {
       console.error("Error submitting the form", error);
     }
   };
-  
 
   return (
     <div
@@ -196,9 +193,7 @@ function UserDetails() {
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="non-binary">Non-Binary</option>
-                      <option value="prefer-not-to-say">
-                        Prefer Not to Say
-                      </option>
+                      <option value="prefer-not-to-say">Prefer Not to Say</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
