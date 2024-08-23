@@ -42,6 +42,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Apply pending migrations and create the database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 // Configure CORS
