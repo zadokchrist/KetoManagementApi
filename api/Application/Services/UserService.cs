@@ -46,6 +46,11 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<User> GetUserByUserNameAndPasswordAsync(string email, string pwd)
+        {
+            return await Task.FromResult(_context.Users.FirstOrDefault(u => u.Email == email && u.Password == pwd));
+        }
+
 
     }
 }

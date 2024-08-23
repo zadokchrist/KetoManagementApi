@@ -46,7 +46,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("/AddPatient")]
-        public async Task<IActionResult> AddPatient(PatientDto patient)
+        public async Task<IActionResult> AddPatient([FromForm] IFormFile file,[FromForm]PatientDto patient)
         {
             try
             {

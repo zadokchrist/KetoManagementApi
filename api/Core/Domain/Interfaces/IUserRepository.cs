@@ -14,6 +14,8 @@ namespace Core.Domain.Interfaces
         Task AddUserAsync(User user);
         Task DeleteUserAsync(int id);
         Task UpdateUserAsync(User user);
+        Task<User> GetUserByUserNameAndPasswordAsync(string email,string pwd);
+
 
     }
 }

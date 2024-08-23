@@ -51,8 +51,13 @@ const SelectField = ({ label, options, value, onChange, name }) => (
 
 function CreatePatient() {
   const [plans, setPlans] = useState([]);
+  const [attachment, setAttachment] = useState(null);
 
-  const GetPlans = async () => {
+  const handleFileChange = (e) => {
+    setAttachment(e.target.files[0]);
+  };
+
+  const getPlans = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}GetAllPlans`);
       setPlans(response.data);
@@ -60,13 +65,13 @@ function CreatePatient() {
       if (error.response) {
         message.error(error.response.data);
       } else {
-        message.error(error);
+        message.error(error.message);
       }
     }
   };
 
   useEffect(() => {
-    GetPlans();
+    getPlans();
   }, []);
 
   const [formData, setFormData] = useState({
@@ -86,12 +91,9 @@ function CreatePatient() {
     observations: "",
     surgicalHistory: "",
     medications: "",
-    attachmentName: "",
     planId: plans.length > 0 ? plans[0].id : "",
     planStartDate: "",
     planEndDate: "",
-    Attachment: ""
-
   });
 
   const handleInputChange = (e) => {
@@ -104,21 +106,38 @@ function CreatePatient() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const requestData = {
-      ...formData,
-      planId: formData.plan,
-    };
+
+    const requestData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      requestData.append(key, formData[key]);
+    });
+
+    if (attachment) {
+      requestData.append("file", attachment);
+    }
+
+    // Ensure the Attachment field is included in the request
+    if (attachment) {
+      requestData.append("Attachment", attachment);
+    } else {
+      message.error("Please upload an attachment.");
+      return;
+    }
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}AddPatient`, requestData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}AddPatient`, requestData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       message.success(response.data);
     } catch (error) {
-      if (error.response.status === 400) {
+      if (error.response?.status === 400) {
         message.error('Bad request. Please check the submitted data.');
-      } else if (error.response.status === 500) {
+      } else if (error.response?.status === 500) {
         message.error('Server error. Please try again later.');
       } else {
-        message.error(`Error: ${error.response.status}. ${error.response.data.message || 'Something went wrong.'}`);
+        message.error(`Error: ${error.response?.status || error.message}. ${error.response?.data?.message || 'Something went wrong.'}`);
       }
     }
   };
@@ -141,12 +160,11 @@ function CreatePatient() {
       observations: "",
       surgicalHistory: "",
       medications: "",
-      attachmentName: "",
-      plan: plans.length > 0 ? plans[0].id : "",
+      planId: plans.length > 0 ? plans[0].id : "",
       planStartDate: "",
       planEndDate: "",
-      Attachment:""
     });
+    setAttachment(null);
   };
 
   return (
@@ -245,7 +263,7 @@ function CreatePatient() {
             <div className="flex flex-col grow shrink-0 basis-0 w-fit max-md:max-w-full">
               <div className="flex gap-2 px-px text-base text-black max-md:flex-wrap">
                 <InputField
-                  label="Current Body weight"
+                  label="Current Body Weight"
                   name="currentBodyWeight"
                   value={formData.currentBodyWeight}
                   onChange={handleInputChange}
@@ -293,8 +311,8 @@ function CreatePatient() {
             <SelectField
               label="Plan"
               options={plans}
-              name="plan"
-              value={formData.plan}
+              name="planId"
+              value={formData.planId}
               onChange={handleInputChange}
             />
             <InputField
@@ -322,7 +340,7 @@ function CreatePatient() {
                 <label htmlFor="fileUpload" className="text-base text-black">
                   Select Attachment to upload
                 </label>
-                <input type="file" id="fileUpload" className="mt-2.5" accept=".pdf,.doc,.xls,.docx" />
+                <input type="file" id="fileUpload" className="mt-2.5" onChange={handleFileChange} />
               </div>
             </div>
             <p className="self-center mt-3.5 ml-16 text-xs font-light text-red-700">
