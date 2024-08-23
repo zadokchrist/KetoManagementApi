@@ -87,6 +87,20 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("/GetUserByUserNameAndPassword/{email}/{pwd}")]
+        public async Task<IActionResult> GetUserByUserNameAndPassword(string email, string pwd)
+        {
+            try
+            {
+                var user = await _userService.GetUserByUserNameAndPasswordAsync(email, pwd);
+                return Ok(user);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
+            }
+        }
+
 
     }
 }
