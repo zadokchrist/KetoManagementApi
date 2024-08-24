@@ -17,7 +17,7 @@ const InputField = ({ label, type = "text", value, onChange, placeholder, name }
       placeholder={placeholder}
       name={name}
     />
-  </div>
+  </div> 
 );
 
 const TextAreaField = ({ label, value, onChange, name }) => (
