@@ -1,16 +1,67 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { message } from "antd";
+
+// Components for form fields
+const InputField = ({ label, type = "text", value, onChange, placeholder, name }) => (
+  <div className="flex flex-col flex-1">
+    <label className="text-base text-black">{label}</label>
+    <input
+      type={type}
+      className="shrink-0 mt-3.5 bg-white rounded border border-solid border-neutral-400 h-[45px] px-2"
+      aria-label={label}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      name={name}
+    />
+  </div>
+);
+
+const TextAreaField = ({ label, value, onChange, name }) => (
+  <div className="flex flex-col flex-1 text-base text-black whitespace-nowrap">
+    <label>{label}</label>
+    <textarea
+      className="shrink-0 mt-3.5 bg-white rounded border border-solid border-neutral-400 h-[90px] p-2"
+      aria-label={label}
+      value={value}
+      onChange={onChange}
+      name={name}
+    />
+  </div>
+);
+
+const SelectField = ({ label, options, value, onChange, name }) => (
+  <div className="flex flex-col flex-1">
+    <label className="text-base text-black">{label}</label>
+    <select
+      className="flex gap-5 justify-between px-4 py-3 mt-3.5 font-light bg-white rounded border border-solid border-neutral-400"
+      value={value}
+      onChange={onChange}
+      name={name}
+    >
+      {options.map((option, index) => (
+        <option key={index} value={option.id}>
+          {option.name}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
 function UserDetails() {
-  const [step, setStep] = useState(1);
+  const [plans, setPlans] = useState([]);
+  const [file, setFile] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
+
   const [formData, setFormData] = useState({
-    title: "",
+    title: "Mr",
     firstName: "",
     lastName: "",
     mobileNumber: "",
     dateOfBirth: "",
-    gender: "",
+    gender: "Female",
     whatsappNumber: "",
     email: "",
     homeAddress: "",
@@ -21,69 +72,285 @@ function UserDetails() {
     observations: "",
     surgicalHistory: "",
     medications: "",
-    attachment: null,
-    planId: 0,
+    attachmentName: "",
+    planId: plans.length > 0 ? plans[0].id : "",
     planStartDate: "",
     planEndDate: "",
+    Attachment: ""
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const GetPlans = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}GetAllPlans`);
+        setPlans(response.data);
+      } catch (error) {
+        if (error.response) {
+          message.error(error.response.data);
+        } else {
+          message.error(error.message);
+        }
+      }
+    };
+    GetPlans();
+  }, []);
 
-  const nextStep = () => {
-    if (step < 3) {
-      setStep(step + 1);
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const prevStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setFormData(prevData => ({
+      ...prevData,
+      Attachment: e.target.files[0]?.name || ""
+    }));
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === 'file') {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      message.error('Attachment file is required.');
+      return;
     }
-  };
 
-  const handleSubmit = async () => {
-    const formDataToSend = new FormData();
-    
-    for (const key in formData) {
-      if (formData[key] !== null && key !== 'attachment') {
-        formDataToSend.append(key, formData[key]);
+    const requestData = new FormData();
+    Object.keys(formData).forEach(key => requestData.append(key, formData[key]));
+    requestData.append('file', file);
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}AddPatient`, requestData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      message.success(response.data);
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          message.error('Bad request. Please check the submitted data.');
+        } else if (status === 500) {
+          message.error('Server error. Please try again later.');
+        } else {
+          message.error(`Error: ${status}. ${data.message || 'Something went wrong.'}`);
+        }
+      } else {
+        message.error('An error occurred.');
       }
     }
-  
-    // Append file details if a file is attached
-    if (formData.attachment) {
-      formDataToSend.append('attachment', formData.attachment);
-    }
-  
-    // Log formData to console for debugging
-    for (let [key, value] of formDataToSend.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-  
-    try {
-      await axios.post("http://45.56.109.230:5001/AddPatient", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigate("/success");
-    } catch (error) {
-      console.error("Error submitting the form", error);
-    }
   };
 
+  const handleCancel = () => {
+    setFormData({
+      title: "Mr",
+      firstName: "",
+      lastName: "",
+      mobileNumber: "",
+      dateOfBirth: "",
+      gender: "Female",
+      whatsappNumber: "",
+      email: "",
+      homeAddress: "",
+      workAddress: "",
+      currentBodyWeight: "",
+      weightGoal: "",
+      allergies: "",
+      observations: "",
+      surgicalHistory: "",
+      medications: "",
+      attachmentName: "",
+      planId: plans.length > 0 ? plans[0].id : "",
+      planStartDate: "",
+      planEndDate: "",
+      Attachment: ""
+    });
+    setFile(null);
+    setActiveStep(0);
+  };
+
+  const steps = [
+    {
+      title: "Patient Details",
+      content: (
+        <>
+          <SelectField
+            label="Title"
+            options={[{ id: "Mr", name: "Mr" }, { id: "Mrs", name: "Mrs" }]}
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Mobile Number"
+            name="mobileNumber"
+            value={formData.mobileNumber}
+            onChange={handleInputChange}
+            placeholder="+256"
+          />
+          <InputField
+            label="Date of Birth"
+            type="date"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleInputChange}
+          />
+          <SelectField
+            label="Gender"
+            options={[
+              { id: "Female", name: "Female" },
+              { id: "Male", name: "Male" },
+              { id: "Other", name: "Other" },
+            ]}
+            name="gender"
+            value={formData.gender}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Whatsapp Number"
+            name="whatsappNumber"
+            value={formData.whatsappNumber}
+            onChange={handleInputChange}
+            placeholder="+256"
+          />
+          <InputField
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Home Address"
+            name="homeAddress"
+            value={formData.homeAddress}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Work Address"
+            name="workAddress"
+            value={formData.workAddress}
+            onChange={handleInputChange}
+          />
+        </>
+      )
+    },
+    {
+      title: "Health Status",
+      content: (
+        <>
+          <InputField
+            label="Current Body weight"
+            name="currentBodyWeight"
+            value={formData.currentBodyWeight}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Weight Goal"
+            name="weightGoal"
+            value={formData.weightGoal}
+            onChange={handleInputChange}
+          />
+          <TextAreaField
+            label="Allergies/Food Exclusions"
+            name="allergies"
+            value={formData.allergies}
+            onChange={handleInputChange}
+          />
+          <TextAreaField
+            label="Observations"
+            name="observations"
+            value={formData.observations}
+            onChange={handleInputChange}
+          />
+          <TextAreaField
+            label="Medication"
+            name="medications"
+            value={formData.medications}
+            onChange={handleInputChange}
+          />
+          <TextAreaField
+            label="Surgical History"
+            name="surgicalHistory"
+            value={formData.surgicalHistory}
+            onChange={handleInputChange}
+          />
+        </>
+      )
+    },
+    {
+      title: "Plan and Attachments",
+      content: (
+        <>
+          <SelectField
+            label="Plan"
+            options={plans}
+            name="planId"
+            value={formData.planId}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Plan Start Date"
+            type="date"
+            name="planStartDate"
+            value={formData.planStartDate}
+            onChange={handleInputChange}
+          />
+          <InputField
+            label="Plan End Date"
+            type="date"
+            name="planEndDate"
+            value={formData.planEndDate}
+            onChange={handleInputChange}
+          />
+          <div className="flex flex-col px-9 mt-9 text-base max-md:px-5 max-md:max-w-full">
+            <div className="mt-8 border-b border-solid border-neutral-400"></div>
+            <div className="flex gap-5 mt-8 max-w-full text-black w-[687px] max-md:flex-wrap">
+              <div className="flex gap-5 self-start">
+                <div className="font-medium">Attachments:</div>
+              </div>
+              <div className="flex-auto">
+                <label htmlFor="fileUpload" className="text-base text-black">
+                  Select Attachment to upload
+                </label>
+                <input
+                  type="file"
+                  id="fileUpload"
+                  className="mt-2.5"
+                  accept=".pdf,.doc,.xls,.docx"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+            <p className="self-center mt-3.5 ml-16 text-xs font-light text-red-700">
+              Files should be in the format of <span className="font-bold">.pdf</span>,{" "}
+              <span className="font-bold">.doc</span>, <span className="font-bold">.xls</span>
+            </p>
+          </div>
+        </>
+      )
+    }
+  ];
+
   return (
-    <div
-      className="flex overflow-hidden flex-col mx-auto w-full bg-green-200 max-w-[1310px] p-4"
+    <section
+      className="flex flex-col pt-3.5 pb-14 mx-8 mt-9 bg-white rounded-md border border-solid border-zinc-300 max-md:mr-2.5 max-md:max-w-full"
       style={{
         backgroundImage:
           "url(https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAzL3Jhd3BpeGVsb2ZmaWNlNF9zb2Z0X2xpZ2h0X21pbmltYWxfdG9uZXNfY2xvc2VfdXBfb2ZfYV90cmVlX21hY185NDYxNmVmYi1jNGVhLTRiMzMtYWFjMC1iZmY0NWI3ZWIwY2RfMS5qcGc.jpg)",
@@ -92,345 +359,65 @@ function UserDetails() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-row w-full gap-8">
-        {/* Left Section - Progress Navigation */}
-        <div className="flex flex-col items-start w-1/3 bg-white bg-opacity-60 rounded-lg p-4">
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/7d0498fb0f4f58a30925bc0d5f8bd87cc29532a518a66380aa0c8b2ad5dfdcff?apiKey=2b51dad425e04206847488420121dc35&"
-            alt="Keto Clinic Logo"
-            className="self-center w-32 max-w-full aspect-square bg-gray-200 mb-4"
-          />
-          <div className="flex flex-col z-10 items-start mt-0 max-w-full w-full">
-            <div
-              className={`flex gap-2 items-center w-full font-medium leading-relaxed ${
-                step >= 1 ? "text-slate-800" : "text-slate-500"
-              }`}
-            >
-              <div className="w-10 h-10 text-lg whitespace-nowrap rounded-3xl bg-slate-800 flex justify-center items-center">
-                1
-              </div>
-              <div className="text-base">Patient Information</div>
-            </div>
-            <div className="flex gap-2.5 justify-center items-center mt-2 w-10">
-              <div className="border-2 border-white border-solid h-6" />
-            </div>
-            <div
-              className={`flex gap-2 items-center mt-2 font-medium leading-relaxed ${
-                step >= 2 ? "text-slate-800" : "text-slate-500"
-              }`}
-            >
-              <div className="w-10 h-10 text-lg whitespace-nowrap bg-white rounded-3xl flex justify-center items-center">
-                2
-              </div>
-              <div className="text-base">Health Status</div>
-            </div>
-            <div className="flex gap-2.5 justify-center items-center mt-2 w-10">
-              <div className="border-2 border-white border-solid h-6" />
-            </div>
-            <div
-              className={`flex gap-2 items-center mt-2 font-medium leading-relaxed ${
-                step >= 3 ? "text-slate-800" : "text-slate-500"
-              }`}
-            >
-              <div className="w-10 h-10 text-lg whitespace-nowrap bg-white rounded-3xl flex justify-center items-center">
-                3
-              </div>
-              <div className="text-base">Plan</div>
-            </div>
-          </div>
+      <div className="flex">
+        <div className="w-1/4 bg-gray-100 p-4">
+          <h2 className="text-xl font-bold">Steps</h2>
+          <ul>
+            {steps.map((step, index) => (
+              <li
+                key={index}
+                className={`cursor-pointer p-2 ${index === activeStep ? "bg-blue-500 text-white" : "bg-white text-black"}`}
+                onClick={() => setActiveStep(index)}
+              >
+                {step.title}
+              </li>
+            ))}
+          </ul>
         </div>
-
-        {/* Right Section - Form */}
-        <div className="flex flex-col w-2/3 bg-white p-8 rounded-lg shadow-lg">
-          {step === 1 && (
-            <>
-              <div className="text-2xl font-bold text-slate-800">
-                Patient Information
+        <div className="w-3/4 p-4">
+          <h1 className="text-xl font-medium mb-4">{steps[activeStep].title}</h1>
+          <form onSubmit={handleSubmit} className="w-full">
+            {steps[activeStep].content}
+            <div className="flex gap-5 justify-between self-end max-w-full mt-8">
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-700 text-white rounded"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+              <div className="flex gap-4">
+                {activeStep > 0 && (
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-gray-500 text-white rounded"
+                    onClick={() => setActiveStep(activeStep - 1)}
+                  >
+                    Back
+                  </button>
+                )}
+                {activeStep < steps.length - 1 ? (
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-blue-700 text-white rounded"
+                    onClick={() => setActiveStep(activeStep + 1)}
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-700 text-white rounded"
+                  >
+                    Submit
+                  </button>
+                )}
               </div>
-              <div className="flex flex-wrap mt-4 w-full text-slate-500">
-                {/* Patient Information Fields */}
-                <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
-                  <div className="flex flex-col w-full">
-                    <div>Salutation</div>
-                    <input
-                      type="text"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col w-full mt-4">
-                    <div>First Name</div>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Last Name</div>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Gender</div>
-                    <select
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="non-binary">Non-Binary</option>
-                      <option value="prefer-not-to-say">Prefer Not to Say</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Email Address</div>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Date of Birth</div>
-                    <input
-                      type="date"
-                      name="dateOfBirth"
-                      value={formData.dateOfBirth}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Phone Number</div>
-                    <input
-                      type="text"
-                      name="mobileNumber"
-                      value={formData.mobileNumber}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Whatsapp Number</div>
-                    <input
-                      type="text"
-                      name="whatsappNumber"
-                      value={formData.whatsappNumber}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Home Address</div>
-                    <input
-                      type="text"
-                      name="homeAddress"
-                      value={formData.homeAddress}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Work Address</div>
-                    <input
-                      type="text"
-                      name="workAddress"
-                      value={formData.workAddress}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end mt-6 w-full">
-                <button
-                  onClick={nextStep}
-                  className="px-8 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700"
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )}
-          {step === 2 && (
-            <>
-              <div className="text-2xl font-bold text-slate-800">
-                Health Status
-              </div>
-              <div className="flex flex-wrap mt-4 w-full text-slate-500">
-                {/* Health Status Fields */}
-                <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
-                  <div className="flex flex-col w-full">
-                    <div>Current Body Weight</div>
-                    <input
-                      type="text"
-                      name="currentBodyWeight"
-                      value={formData.currentBodyWeight}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Weight Goal</div>
-                    <input
-                      type="text"
-                      name="weightGoal"
-                      value={formData.weightGoal}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Allergies</div>
-                    <input
-                      type="text"
-                      name="allergies"
-                      value={formData.allergies}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
-                  <div className="flex flex-col w-full">
-                    <div>Observations</div>
-                    <input
-                      type="text"
-                      name="observations"
-                      value={formData.observations}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Surgical History</div>
-                    <input
-                      type="text"
-                      name="surgicalHistory"
-                      value={formData.surgicalHistory}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                  <div className="flex flex-col mt-4 w-full">
-                    <div>Medications</div>
-                    <input
-                      type="text"
-                      name="medications"
-                      value={formData.medications}
-                      onChange={handleChange}
-                      className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-between mt-6 w-full">
-                <button
-                  onClick={prevStep}
-                  className="px-8 py-3 text-white bg-slate-600 rounded-lg shadow-md hover:bg-slate-700"
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={nextStep}
-                  className="px-8 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700"
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )}
-          {step === 3 && (
-            <>
-              <div className="text-2xl mt-12 font-bold text-slate-800">Plan</div>
-              <div className="flex flex-wrap mt-4 w-full text-slate-500">
-                <div className="flex flex-col md:flex-row w-full">
-                  <div className="flex flex-col w-full md:w-1/2 pr-4 mb-4">
-                    <div className="flex flex-col w-full mb-4">
-                      <div>Plan ID</div>
-                      <input
-                        type="number"
-                        name="planId"
-                        value={formData.planId}
-                        onChange={handleChange}
-                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                      />
-                    </div>
-                    <div className="flex flex-col w-full">
-                      <div>Plan Start Date</div>
-                      <input
-                        type="date"
-                        name="planStartDate"
-                        value={formData.planStartDate}
-                        onChange={handleChange}
-                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Right Column */}
-                  <div className="flex flex-col w-full md:w-1/2 pl-4 mb-4">
-                    <div className="flex flex-col w-full mb-4">
-                      <div>Plan End Date</div>
-                      <input
-                        type="date"
-                        name="planEndDate"
-                        value={formData.planEndDate}
-                        onChange={handleChange}
-                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                      />
-                    </div>
-                    <div className="flex flex-col w-full">
-                      <div>Attachment</div>
-                      <input
-                        type="file"
-                        name="attachment"
-                        onChange={handleChange}
-                        className="px-6 py-3 mt-2 w-full rounded-lg border border-solid bg-slate-100 border-slate-200"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-between mt-14 mb-8 w-full">
-                <button
-                  onClick={prevStep}
-                  className="px-8 py-3 text-white bg-slate-600 rounded-lg shadow-md hover:bg-slate-700"
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  className="px-8 py-3 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700"
-                >
-                  Submit
-                </button>
-              </div>
-            </>
-          )}
+            </div>
+          </form>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
