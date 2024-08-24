@@ -380,7 +380,7 @@ function UserDetails() {
             {steps.map((step, index) => (
               <li
                 key={index}
-                className={`cursor-pointer p-2 ${index === activeStep ? "bg-blue-500 text-white" : "bg-white text-black"}`}
+                className={`cursor-pointer p-2 ${index === activeStep ? "bg-green-400 text-white" : "bg-white text-black"}`}
                 onClick={() => setActiveStep(index)}
               >
                 {step.title}
