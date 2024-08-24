@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 import { message } from "antd";
 
 // Components for form fields
@@ -53,6 +54,7 @@ const SelectField = ({ label, options, value, onChange, name }) => (
 function UserDetails() {
   const [plans, setPlans] = useState([]);
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
 
   const [formData, setFormData] = useState({
@@ -113,34 +115,45 @@ function UserDetails() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validate that a file is selected
     if (!file) {
       message.error('Attachment file is required.');
       return;
     }
-
+  
+    // Create FormData object and append form data and file
     const requestData = new FormData();
     Object.keys(formData).forEach(key => requestData.append(key, formData[key]));
     requestData.append('file', file);
-
+  
     try {
+      // Send POST request with FormData
       const response = await axios.post(`${process.env.REACT_APP_API_URL}AddPatient`, requestData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      message.success(response.data);
+ 
+      message.success('Patient added successfully.');
+    
+      navigate('/success'); 
     } catch (error) {
+     
       if (error.response) {
         const { status, data } = error.response;
-        if (status === 400) {
-          message.error('Bad request. Please check the submitted data.');
-        } else if (status === 500) {
-          message.error('Server error. Please try again later.');
-        } else {
-          message.error(`Error: ${status}. ${data.message || 'Something went wrong.'}`);
+        switch (status) {
+          case 400:
+            message.error('Bad request. Please check the submitted data.');
+            break;
+          case 500:
+            message.error('Server error. Please try again later.');
+            break;
+          default:
+            message.error(`Error: ${status}. ${data.message || 'Something went wrong.'}`);
         }
       } else {
-        message.error('An error occurred.');
+        message.error('An error occurred. Please check your network connection.');
       }
     }
   };
