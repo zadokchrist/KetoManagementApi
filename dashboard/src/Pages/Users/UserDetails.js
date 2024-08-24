@@ -20,7 +20,7 @@ const InputField = ({ label, type = "text", value, onChange, placeholder, name }
 );
 
 const TextAreaField = ({ label, value, onChange, name }) => (
-  <div className="flex flex-col flex-1 text-base text-black whitespace-nowrap">
+  <div className="flex flex-col flex-1 text-base text-black">
     <label>{label}</label>
     <textarea
       className="shrink-0 mt-3.5 bg-white rounded border border-solid border-neutral-400 h-[90px] p-2"
@@ -177,173 +177,187 @@ function UserDetails() {
     {
       title: "Patient Details",
       content: (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <SelectField
+              label="Title"
+              options={[{ id: "Mr", name: "Mr" }, { id: "Mrs", name: "Mrs" }]}
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="First Name"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Last Name"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Mobile Number"
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={handleInputChange}
+              placeholder="+256"
+            />
+            <InputField
+              label="Date of Birth"
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleInputChange}
+            />
+            
+          </div>
+          <div>
           <SelectField
-            label="Title"
-            options={[{ id: "Mr", name: "Mr" }, { id: "Mrs", name: "Mrs" }]}
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="First Name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Last Name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Mobile Number"
-            name="mobileNumber"
-            value={formData.mobileNumber}
-            onChange={handleInputChange}
-            placeholder="+256"
-          />
-          <InputField
-            label="Date of Birth"
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleInputChange}
-          />
-          <SelectField
-            label="Gender"
-            options={[
-              { id: "Female", name: "Female" },
-              { id: "Male", name: "Male" },
-              { id: "Other", name: "Other" },
-            ]}
-            name="gender"
-            value={formData.gender}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Whatsapp Number"
-            name="whatsappNumber"
-            value={formData.whatsappNumber}
-            onChange={handleInputChange}
-            placeholder="+256"
-          />
-          <InputField
-            label="Email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Home Address"
-            name="homeAddress"
-            value={formData.homeAddress}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Work Address"
-            name="workAddress"
-            value={formData.workAddress}
-            onChange={handleInputChange}
-          />
-        </>
+              label="Gender"
+              options={[
+                { id: "Female", name: "Female" },
+                { id: "Male", name: "Male" },
+                { id: "Other", name: "Other" },
+              ]}
+              name="gender"
+              value={formData.gender}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Whatsapp Number"
+              name="whatsappNumber"
+              value={formData.whatsappNumber}
+              onChange={handleInputChange}
+              placeholder="+256"
+            />
+            <InputField
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Home Address"
+              name="homeAddress"
+              value={formData.homeAddress}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Work Address"
+              name="workAddress"
+              value={formData.workAddress}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
       )
     },
     {
       title: "Health Status",
       content: (
-        <>
-          <InputField
-            label="Current Body weight"
-            name="currentBodyWeight"
-            value={formData.currentBodyWeight}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Weight Goal"
-            name="weightGoal"
-            value={formData.weightGoal}
-            onChange={handleInputChange}
-          />
-          <TextAreaField
-            label="Allergies/Food Exclusions"
-            name="allergies"
-            value={formData.allergies}
-            onChange={handleInputChange}
-          />
-          <TextAreaField
-            label="Observations"
-            name="observations"
-            value={formData.observations}
-            onChange={handleInputChange}
-          />
-          <TextAreaField
-            label="Medication"
-            name="medications"
-            value={formData.medications}
-            onChange={handleInputChange}
-          />
-          <TextAreaField
-            label="Surgical History"
-            name="surgicalHistory"
-            value={formData.surgicalHistory}
-            onChange={handleInputChange}
-          />
-        </>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <InputField
+              label="Current Body weight"
+              name="currentBodyWeight"
+              value={formData.currentBodyWeight}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Weight Goal"
+              name="weightGoal"
+              value={formData.weightGoal}
+              onChange={handleInputChange}
+            />
+            <TextAreaField
+              label="Medication"
+              name="medications"
+              value={formData.medications}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <TextAreaField
+              label="Allergies/Food Exclusions"
+              name="allergies"
+              value={formData.allergies}
+              onChange={handleInputChange}
+            />
+            <TextAreaField
+              label="Observations"
+              name="observations"
+              value={formData.observations}
+              onChange={handleInputChange}
+            />
+            
+            <TextAreaField
+              label="Surgical History"
+              name="surgicalHistory"
+              value={formData.surgicalHistory}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
       )
     },
     {
       title: "Plan and Attachments",
       content: (
-        <>
-          <SelectField
-            label="Plan"
-            options={plans}
-            name="planId"
-            value={formData.planId}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Plan Start Date"
-            type="date"
-            name="planStartDate"
-            value={formData.planStartDate}
-            onChange={handleInputChange}
-          />
-          <InputField
-            label="Plan End Date"
-            type="date"
-            name="planEndDate"
-            value={formData.planEndDate}
-            onChange={handleInputChange}
-          />
-          <div className="flex flex-col px-9 mt-9 text-base max-md:px-5 max-md:max-w-full">
-            <div className="mt-8 border-b border-solid border-neutral-400"></div>
-            <div className="flex gap-5 mt-8 max-w-full text-black w-[687px] max-md:flex-wrap">
-              <div className="flex gap-5 self-start">
-                <div className="font-medium">Attachments:</div>
-              </div>
-              <div className="flex-auto">
-                <label htmlFor="fileUpload" className="text-base text-black">
-                  Select Attachment to upload
-                </label>
-                <input
-                  type="file"
-                  id="fileUpload"
-                  className="mt-2.5"
-                  accept=".pdf,.doc,.xls,.docx"
-                  onChange={handleFileChange}
-                />
-              </div>
-            </div>
-            <p className="self-center mt-3.5 ml-16 text-xs font-light text-red-700">
-              Files should be in the format of <span className="font-bold">.pdf</span>,{" "}
-              <span className="font-bold">.doc</span>, <span className="font-bold">.xls</span>
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <SelectField
+              label="Plan"
+              options={plans}
+              name="planId"
+              value={formData.planId}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Plan Start Date"
+              type="date"
+              name="planStartDate"
+              value={formData.planStartDate}
+              onChange={handleInputChange}
+            />
+            <InputField
+              label="Plan End Date"
+              type="date"
+              name="planEndDate"
+              value={formData.planEndDate}
+              onChange={handleInputChange}
+            />
           </div>
-        </>
+          <div>
+            <div className="flex flex-col px-9 mt-9 text-base max-md:px-5 max-md:max-w-full">
+              <div className="mt-8 border-b border-solid border-neutral-400"></div>
+              <div className="flex gap-5 mt-8 max-w-full text-black w-[687px] max-md:flex-wrap">
+                <div className="flex gap-5 self-start">
+                  <div className="font-medium">Attachments:</div>
+                </div>
+                <div className="flex-auto">
+                  <label htmlFor="fileUpload" className="text-base text-black">
+                    Select Attachment to upload
+                  </label>
+                  <input
+                    type="file"
+                    id="fileUpload"
+                    className="mt-2.5"
+                    accept=".pdf,.doc,.xls,.docx"
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </div>
+              <p className="self-center mt-3.5 ml-16 text-xs font-light text-red-700">
+                Files should be in the format of <span className="font-bold">.pdf</span>,{" "}
+                <span className="font-bold">.doc</span>, <span className="font-bold">.xls</span>
+              </p>
+            </div>
+          </div>
+        </div>
       )
     }
   ];
