@@ -1,14 +1,28 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { message } from "antd"; // Import message from antd
 import Shared from "./Shared";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // Import and use useNavigate for routing
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
+    // Check if email and password are filled
+    if (email && password) {
+      // Simulate a successful login and navigate to the user-details page
+      navigate("/user-details");
+    } else {
+      // Display an error message
+      message.error("Please enter both email and password.");
+    }
+  };
+
+  const handleForgotPassword = () => {
+    console.log("Forgot password clicked");
   };
 
   return (
@@ -60,27 +74,25 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     <img
                       loading="lazy"
                       src="https://cdn.builder.io/api/v1/image/assets/TEMP/045133a1b45652187460a2819fe8297cd0f473c13e177b92d08d6597696088f0?placeholderIfAbsent=true&apiKey=5bf51c3fc9cb49b480a07670cbcd768f"
-                      alt=""
+                      alt={showPassword ? "Hide password" : "Show password"}
                       className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
                     />
                   </button>
                 </div>
               </div>
-              <p className="mt-6  text-neutral-600 self-start">
-                Forgot password?{""}
-                <a
-                  href="/forgot"
-                  className="mt-6 font-semibold text-blue-400 text-neutral-600 self-start"
+              <p className="mt-6 text-neutral-600 self-start">
+                Forgot password?{" "}
+                <button
+                  onClick={handleForgotPassword}
+                  className="font-semibold text-blue-400"
                 >
                   Click Me
-                </a>
+                </button>
               </p>
 
               <button
