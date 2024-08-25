@@ -10,7 +10,7 @@ const InputField = ({ label, type = "text", value, onChange, placeholder, name }
     <label className="text-base text-black">{label}</label>
     <input
       type={type}
-      className="shrink-0 mt-3.5 bg-white rounded border border-solid border-neutral-400 h-[45px] px-2"
+      className="shrink-0 mt-3.5 bg-white rounded border border-solid border-neutral-400 h-[48px] px-2"
       aria-label={label}
       value={value}
       onChange={onChange}
@@ -18,6 +18,7 @@ const InputField = ({ label, type = "text", value, onChange, placeholder, name }
       name={name}
     />
   </div> 
+
 );
 
 const TextAreaField = ({ label, value, onChange, name }) => (
